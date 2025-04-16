@@ -1,4 +1,4 @@
-App = () => {
+const App = () => {
 
   return (
     <>
