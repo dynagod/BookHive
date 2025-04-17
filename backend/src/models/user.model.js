@@ -29,29 +29,16 @@ userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password);
 };
 
-userSchema.methods.generateAccessToken = async function () {
+userSchema.methods.generateJwtToken = async function () {
     return jwt.sign(
         {
             _id: this._id,
-            email: this.email,
-            fullName: this.fullName,
-            username: this.username
+            username: this.username,
+            role: this.role
         },
-        process.env.ACCESS_TOKEN_SECRET,
+        process.env.JWT_SECRET_KEY,
         {
-            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-        }
-    );
-};
-
-userSchema.methods.generateRefreshToken = async function () {
-    return jwt.sign(
-        {
-            _id: this._id
-        },
-        process.env.REFRESH_TOKEN_SECRET,
-        {
-            expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+            expiresIn: process.env.JWT_SECRET_EXPIRY
         }
     );
 };
