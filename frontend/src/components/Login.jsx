@@ -6,9 +6,9 @@ import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
     const [message, setMessage] = useState("")
-    // const { loginUser, signInWithGoogle} = useAuth();
-    const loginUser = () => {};
-    const signInWithGoogle = () => {};
+    const { loginUser, signInWithGoogle} = useAuth();
+    // const loginUser = () => {};
+    // const signInWithGoogle = () => {};
 
 
     const navigate = useNavigate()
