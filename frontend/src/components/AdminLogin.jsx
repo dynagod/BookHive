@@ -17,15 +17,13 @@ const AdminLogin = () => {
       const navigate = useNavigate()
 
       const onSubmit = async (data) => {
-        // console.log(data)
         try {
-           const response =  await axios.post(`${getBaseUrl()}/api/auth/admin`, data, {
+           const response =  await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/admin/login`, data, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
            })
-           const auth = response.data;
-        //    console.log(auth)
+           const auth = response.data.data;
             if(auth.token) {
                 localStorage.setItem('token', auth.token);
                 setTimeout(() => {

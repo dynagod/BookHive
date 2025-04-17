@@ -5,19 +5,18 @@ import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged,
 const AuthContext =  createContext();
 
 export const useAuth = () => {
-    return useContext(AuthContext)
+    return useContext(AuthContext);
 }
 
 const googleProvider = new GoogleAuthProvider();
 
 // authProvider
-export const AuthProvide = ({children}) => {
+export const AuthProvide = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     // register a user
-    const registerUser = async (email,password) => {
-
+    const registerUser = async (email, password) => {
         return await createUserWithEmailAndPassword(auth, email, password);
     }
 

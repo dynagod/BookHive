@@ -6,7 +6,7 @@ const OrderPage = () => {
     const { currentUser} = useAuth()
 
 
-    const { data: orders = [], isLoading, isError } = useGetOrderByEmailQuery(currentUser.email);
+    const { data: { orders = [] } = {}, isLoading, isError } = useGetOrderByEmailQuery(currentUser.email);
     if (isLoading) return <div>Loading...</div>
     if (isError) return <div>Error geting orders data</div>
     return (

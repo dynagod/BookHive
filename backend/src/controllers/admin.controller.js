@@ -1,5 +1,6 @@
 import { Book } from "../models/book.model.js";
 import { Order } from "../models/order.model.js";
+import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
@@ -12,10 +13,12 @@ const adminLogin = asyncHandler(async (req, res) => {
     const admin =  await User.findOne({ username });
     if (!admin) throw new ApiError(404, "Admin not found");
 
-    const isPasswordValid = await admin.isPasswordCorrect(password);
-    if(!isPasswordValid) throw new ApiError(400, "Invalid user credentials");
+    // const isPasswordValid = await admin.isPasswordCorrect(password);
+    // if(!isPasswordValid) throw new ApiError(400, "Invalid user credentials");
 
-    const token = admin.generateJwtToken();
+    if (admin.password !== password) throw new ApiError(400, "Invalid user credentials");
+
+    const token = await admin.generateJwtToken();
 
     return res
     .status(200)
@@ -46,14 +49,10 @@ const getAdminStats = asyncHandler(async (req, res) => {
         }
     ]);
 
-    console.log(totalSales);
-
     const trendingBooksCount = await Book.aggregate([
         { $match: { trending: true } },
         { $count: "trendingBooksCount" }
     ]);
-
-    console.log(trendingBooksCount);
 
     const trendingBooks = trendingBooksCount.length > 0 ? trendingBooksCount[0].trendingBooksCount : 0;
 
