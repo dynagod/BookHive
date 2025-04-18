@@ -5,7 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 const ManageBooks = () => {
     const navigate = useNavigate();
 
-    const {data: books, refetch} = useFetchAllBooksQuery()
+    const {data: { data } = {}, refetch} = useFetchAllBooksQuery();
+    const books = data?.books;
 
     const [deleteBook] = useDeleteBookMutation()
 

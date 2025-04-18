@@ -19,7 +19,10 @@ const TopSellers = () => {
     
     const [selectedCategory, setSelectedCategory] = useState("Choose a genre");
 
-    const { data: { books = [] } = {} } = useFetchAllBooksQuery();
+    const { data: { data } = {} } = useFetchAllBooksQuery();
+    const books = data?.books || [];
+
+    console.log(books)
   
     const filteredBooks = selectedCategory === "Choose a genre" ? books : books?.filter(book => book.category === selectedCategory.toLowerCase())
 
