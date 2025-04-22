@@ -9,7 +9,8 @@ import { useFetchBookByIdQuery } from '../../redux/features/books/booksApi';
 
 const SingleBook = () => {
     const {id} = useParams();
-    const {data: book, isLoading, isError} = useFetchBookByIdQuery(id);
+    const {data: { data } = {}, isLoading, isError} = useFetchBookByIdQuery(id);
+    const book = data?.book;
 
     const dispatch =  useDispatch();
 
@@ -26,7 +27,7 @@ const SingleBook = () => {
             <div className=''>
                 <div>
                     <img
-                        src={`${getImgUrl(book.coverImage)}`}
+                        src={book.coverImage}
                         alt={book.title}
                         className="mb-8"
                     />
