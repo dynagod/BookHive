@@ -21,8 +21,6 @@ const TopSellers = () => {
 
     const { data: { data } = {} } = useFetchAllBooksQuery();
     const books = data?.books || [];
-
-    console.log(books)
   
     const filteredBooks = selectedCategory === "Choose a genre" ? books : books?.filter(book => book.category === selectedCategory.toLowerCase())
 

@@ -2,18 +2,23 @@ import { Book } from "../models/book.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import { destroyOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const postABook = asyncHandler(async (req, res) => {
-    const { title, description, category, trending, coverImage, oldPrice, newPrice } = req.body;
+    const { title, description, category, trending, oldPrice, newPrice } = req.body;
 
-    if (!title || !description || !category || !trending || !coverImage || !oldPrice || !newPrice) throw new ApiError(400, "All the required details are necessary");
+    if (!title || !description || !category || !trending || !oldPrice || !newPrice || !req.file) throw new ApiError(400, "All the required details are necessary");
+
+    const imageLocalPath = req.file?.path;
+
+    const image = await uploadOnCloudinary(imageLocalPath);
 
     const newBook = await Book.create({
         title,
         description,
         category,
         trending,
-        coverImage,
+        coverImage: image?.url,
         oldPrice,
         newPrice
     });
@@ -56,6 +61,9 @@ const deleteABook = asyncHandler(async (req, res) => {
     if (!id) throw new ApiError(400, "Book id is required");
 
     const deletedBook =  await Book.findByIdAndDelete(id);
+    const imageToBeDelete = deletedBook.coverImage;
+
+    await destroyOnCloudinary(imageToBeDelete);
 
     if (!deletedBook) throw new ApiError(404, "Book is not found");
 
