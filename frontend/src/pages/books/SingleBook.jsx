@@ -6,6 +6,7 @@ import { getImgUrl } from '../../utils/getImgUrl';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/features/cart/cartSlice';
 import { useFetchBookByIdQuery } from '../../redux/features/books/booksApi';
+import Loading from '../../components/Loading';
 
 const SingleBook = () => {
     const {id} = useParams();
@@ -18,7 +19,7 @@ const SingleBook = () => {
         dispatch(addToCart(product))
     }
 
-    if(isLoading) return <div>Loading...</div>
+    if(isLoading) return <Loading />
     if(isError) return <div>Error happending to load book info</div>
   return (
     <div className="max-w-lg shadow-md p-5">

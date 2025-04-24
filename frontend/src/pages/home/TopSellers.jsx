@@ -25,7 +25,7 @@ const TopSellers = () => {
     const filteredBooks = selectedCategory === "Choose a genre" ? books : books?.filter(book => book.category === selectedCategory.toLowerCase())
 
     return (
-        <div className='py-10'>
+        <div className='py-10 px-16 bg-[#111827]'>
             <h2 className='text-3xl font-semibold mb-6'>Top Sellers</h2>
             {/* category filtering */}
             <div className='mb-8 flex items-center'>

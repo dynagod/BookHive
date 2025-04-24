@@ -43,6 +43,24 @@ const getSingleBook = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, { book }, "Book found successfully"));
 });
 
+const getBooksBySearch = asyncHandler(async (req, res) => {
+    const rawQuery = req.query.q || "";
+    const query = rawQuery.trim();
+
+    const escapeRegex = string => string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const safeQuery = escapeRegex(query);
+
+    const keyword = {
+        $or: [
+            { title: { $regex: safeQuery, $options: "i" } }
+        ]
+    };
+
+    const books = await Book.find(keyword);
+
+    return res.status(200).json(new ApiResponse(200, { books }, "Matched book result"));
+});
+
 const updateBook = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -70,4 +88,4 @@ const deleteABook = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, { book: deletedBook }, "Book deleted successfully"));
 });
 
-export { postABook, getAllBooks, getSingleBook, updateBook, deleteABook };
+export { postABook, getAllBooks, getSingleBook, getBooksBySearch, updateBook, deleteABook };

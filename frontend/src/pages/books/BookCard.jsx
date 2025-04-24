@@ -14,7 +14,7 @@ const BookCard = ({book}) => {
         dispatch(addToCart(product))
     }
     return (
-        <div className=" rounded-lg transition-shadow duration-300">
+        <div className=" rounded-lg transition-shadow duration-300 bg-[#111827]">
             <div
                 className="flex flex-col sm:flex-row sm:items-center sm:h-72  sm:justify-center gap-4"
             >
