@@ -33,12 +33,12 @@ const Navbar = () => {
   const token = localStorage.getItem("token");
 
   return (
-    <header className="bg-[#0a0a0a] max-w-screen-2xl mx-auto p-16 shadow-lg">
+    <header className="bg-gradient-to-r from-[#0a0a0a] via-[#1a1a1a] to-[#FFF6D9] max-w-screen-2xl mx-auto p-16 shadow-lg">
       <nav className="flex justify-between items-center">
         {/* left side */}
         <div className="flex items-center md:gap-16 gap-4">
           <Link to="/">
-            <HiBookOpen className="size-10 p-2 text-white bg-blue-600 rounded-md" />
+            <HiBookOpen className="size-10 p-2 text-[#FFF6D9] bg-blue-600 rounded-md" />
           </Link>
 
           {/* search input */}
@@ -55,13 +55,13 @@ const Navbar = () => {
                     src={avatarImg}
                     alt=""
                     className={`size-7 rounded-full ${
-                      currentUser ? "ring-2 ring-blue-500" : ""
+                      currentUser ? "ring-2 ring-[#FFF6D9]" : ""
                     }`}
                   />
                 </button>
                 {/* show dropdowns */}
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md z-40">
+                  <div className="absolute right-0 mt-2 w-48 bg-[#FFF6D9] shadow-lg rounded-md z-40">
                     <ul className="py-2">
                       {navigation.map((item) => (
                         <li
@@ -70,7 +70,7 @@ const Navbar = () => {
                         >
                           <Link
                             to={item.href}
-                            className="block px-4 py-2 text-sm hover:bg-gray-100"
+                            className="block px-4 py-2 text-sm hover:bg-[#0a0a0a] hover:text-[#FFF6D9]"
                           >
                             {item.name}
                           </Link>
@@ -79,7 +79,7 @@ const Navbar = () => {
                       <li>
                         <button
                           onClick={handleLogOut}
-                          className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                          className="block w-full text-left px-4 py-2 text-sm hover:bg-[#0a0a0a] hover:text-[#FFF6D9]"
                         >
                           Logout
                         </button>
@@ -89,24 +89,24 @@ const Navbar = () => {
                 )}
               </>
             ) : token ? (
-              <Link to="/dashboard" className="border-b-2 border-primary">
+              <Link to="/dashboard" className="border-b-2 border-[#FFF6D9] text-[#FFF6D9]">
                 Dashboard
               </Link>
             ) : (
               <Link to="/login">
                 {" "}
-                <HiOutlineUser className="size-6" />
+                <HiOutlineUser className="size-6 text-[#FFF6D9]" />
               </Link>
             )}
           </div>
 
           <button className="hidden sm:block">
-            <HiOutlineHeart className="size-6" />
+            <HiOutlineHeart className="size-6 text-[#FFF6D9]" />
           </button>
 
           <Link
             to="/cart"
-            className="bg-primary p-1 sm:px-6 px-2 flex items-center rounded-sm"
+            className="bg-[#FFF6D9] p-1 sm:px-6 px-2 flex items-center rounded-sm text-[#0a0a0a]"
           >
             <HiOutlineShoppingCart className="" />
             {cartItems.length > 0 ? (
