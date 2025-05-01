@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mail, Phone, MapPin, Send, Check, AlertCircle, Loader, Moon, Sun, Copy, ExternalLink } from 'lucide-react';
+import { Mail, Phone, Send, Check, AlertCircle, Loader, Copy, ExternalLink } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const formRef = useRef(null);
@@ -8,24 +9,10 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [progress, setProgress] = useState(0);
-  const [theme, setTheme] = useState('light');
   const [faqOpen, setFaqOpen] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [copied, setCopied] = useState(null);
   const [formTouched, setFormTouched] = useState(false);
-
-  // Load theme from localStorage on mount
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
-    document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-  }, []);
-
-  // Persist theme in localStorage
-  useEffect(() => {
-    localStorage.setItem('theme', theme);
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
 
   // Reset copied text status
   useEffect(() => {
@@ -43,17 +30,14 @@ const Contact = () => {
     }
   }, [submitStatus]);
 
-  // Toggle theme
-  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
-
   // Validate form fields
   const validateForm = (data) => {
     const newErrors = {};
     if (!data.name.trim()) newErrors.name = 'Name is required';
     if (!data.email.trim()) {
       newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(data.email)) {
-      newErrors.email = 'Invalid email format';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      newErrors.email = 'Invalid email format (e.g., user@domain.com)';
     }
     if (!data.message.trim()) newErrors.message = 'Message is required';
     else if (data.message.length > 500) newErrors.message = 'Message cannot exceed 500 characters';
@@ -63,9 +47,9 @@ const Contact = () => {
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
-    
+
     if (!formTouched) setFormTouched(true);
-    
+
     // Debounce validation
     clearTimeout(window.validateTimeout);
     window.validateTimeout = setTimeout(() => {
@@ -76,10 +60,9 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm(formData);
-    
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      // Scroll to first error
       const firstErrorField = Object.keys(validationErrors)[0];
       document.getElementById(firstErrorField)?.focus();
       return;
@@ -88,19 +71,40 @@ const Contact = () => {
     setIsSubmitting(true);
     setProgress(0);
     const interval = setInterval(() => setProgress((p) => Math.min(p + 10, 90)), 100);
-    
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate API
+      const emailData = {
+        to_email: 'bookhivehelp@gmail.com',
+        subject: `Contact Form: Message from ${formData.name}`,
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message,
+      };
+
+      await emailjs.send(
+        'YOUR_SERVICE_ID',
+        'YOUR_TEMPLATE_ID',
+        emailData,
+        'YOUR_PUBLIC_KEY'
+      );
+
       clearInterval(interval);
       setProgress(100);
       setShowConfetti(true);
-      setSubmitStatus({ type: 'success', message: 'Your message has been sent successfully!' });
+      setSubmitStatus({
+        type: 'success',
+        message: 'Your message has been sent successfully to BookHive Help!',
+      });
       setFormData({ name: '', email: '', message: '' });
       setFormTouched(false);
       setTimeout(() => setShowConfetti(false), 3000);
     } catch (error) {
       clearInterval(interval);
-      setSubmitStatus({ type: 'error', message: 'Failed to send message. Please try again later.' });
+      console.error('Error sending email:', error);
+      setSubmitStatus({
+        type: 'error',
+        message: 'Failed to send message. Please try again later or email us directly at bookhivehelp@gmail.com',
+      });
     } finally {
       setIsSubmitting(false);
       setTimeout(() => setProgress(0), 500);
@@ -113,26 +117,26 @@ const Contact = () => {
   };
 
   const faqs = [
-    { 
-      q: 'How long does it take to get a response?', 
-      a: 'We typically respond within 24-48 hours during business days. For urgent matters, please call our support line.' 
+    {
+      q: 'How long does it take to get a response?',
+      a: 'We typically respond within 24-48 hours during business days. For urgent matters, please call our support line.',
     },
-    { 
-      q: 'Can I call instead of emailing?', 
-      a: 'Yes, our phone line is open 9 AM - 5 PM IST Monday through Friday. Feel free to call us for immediate assistance.' 
+    {
+      q: 'Can I call instead of emailing?',
+      a: 'Yes, our phone line is open 9 AM - 5 PM IST Monday through Friday. Feel free to call us for immediate assistance.',
     },
-    { 
-      q: 'What information should I include in my message?', 
-      a: 'Please include your full name, order number (if applicable), and a detailed description of your question or concern so we can assist you more efficiently.' 
+    {
+      q: 'What information should I include in my message?',
+      a: 'Please include your full name, order number (if applicable), and a detailed description of your question or concern so we can assist you more efficiently.',
     },
-    { 
-      q: 'Do you offer support in languages other than English?', 
-      a: 'No, we currently offer support in English only. However, we are working on expanding our language support in the future.' 
-    }
+    {
+      q: 'Do you offer support in languages other than English?',
+      a: 'No, we currently offer support in English only. However, we are working on expanding our language support in the future.',
+    },
   ];
 
   const contactInfo = [
-    { icon: <Mail className="h-5 w-5" />, label: 'Email', value: 'support@bookhive.com' },
+    { icon: <Mail className="h-5 w-5" />, label: 'Email', value: 'bookhivehelp@gmail.com' },
     { icon: <Phone className="h-5 w-5" />, label: 'Phone', value: '+1 (234) 567-8900' },
   ];
 
@@ -140,14 +144,14 @@ const Contact = () => {
     { name: 'Twitter', url: 'https://twitter.com/bookhive' },
     { name: 'LinkedIn', url: 'https://linkedin.com/company/bookhive' },
     { name: 'Instagram', url: 'https://instagram.com/bookhive' },
-    { name: 'Facebook', url: 'https://facebook.com/bookhive' }
+    { name: 'Facebook', url: 'https://facebook.com/bookhive' },
   ];
 
   return (
     <div
-      className={`min-h-screen ${theme === 'light' ? 'bg-amber-50' : 'bg-gray-900'} transition-colors duration-500 font-serif relative overflow-hidden`}
+      className="min-h-screen bg-amber-50 transition-colors duration-500 font-serif relative overflow-hidden"
       style={{
-        backgroundImage: theme === 'light' ? 'url("https://www.transparenttextures.com/patterns/paper.png")' : 'none',
+        backgroundImage: 'url("https://www.transparenttextures.com/patterns/paper.png")',
       }}
     >
       {/* Confetti Effect */}
@@ -156,26 +160,17 @@ const Contact = () => {
           {[...Array(50)].map((_, i) => (
             <div
               key={i}
-              className={`absolute w-2 h-2 rounded-full animate-confetti`}
+              className="absolute w-2 h-2 rounded-full animate-confetti"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 2}s`,
-                backgroundColor: ['#FCD34D', '#F59E0B', '#FBBF24', '#F97316', '#C2410C'][Math.floor(Math.random() * 5)]
+                backgroundColor: ['#FCD34D', '#F59E0B', '#FBBF24', '#F97316', '#C2410C'][Math.floor(Math.random() * 5)],
               }}
             />
           ))}
         </div>
       )}
-
-      {/* Theme Toggle */}
-      <button
-        onClick={toggleTheme}
-        className="fixed top-4 right-4 p-3 rounded-full bg-amber-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 z-50 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-amber-300 dark:focus:ring-gray-500"
-        aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-      >
-        {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-      </button>
 
       {/* Progress Bar - Fixed at top */}
       {isSubmitting && (
@@ -189,14 +184,10 @@ const Contact = () => {
 
       {/* Header */}
       <div className="pt-16 pb-12 px-4 text-center">
-        <h1
-          className={`text-5xl md:text-6xl font-bold ${
-            theme === 'light' ? 'text-amber-800' : 'text-amber-200'
-          } mb-6 animate-fade-in`}
-        >
+        <h1 className="text-5xl md:text-6xl font-bold text-amber-800 mb-6 animate-fade-in">
           Write to Us
         </h1>
-        <p className={`text-lg md:text-xl ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'} max-w-2xl mx-auto animate-fade-in animation-delay-200`}>
+        <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto animate-fade-in animation-delay-200">
           Your story matters. Reach out and let's turn the page together.
         </p>
         {submitStatus && (
@@ -223,18 +214,12 @@ const Contact = () => {
           {/* Form Section */}
           <div className="lg:col-span-2">
             <div
-              className={`p-8 rounded-2xl shadow-2xl ${
-                theme === 'light' ? 'bg-white/90' : 'bg-gray-800/90'
-              } border border-amber-200 hover:shadow-amber-200/30 transition-all duration-500 animate-slide-in animation-delay-100`}
+              className="p-8 rounded-2xl shadow-2xl bg-white/90 border border-amber-200 hover:shadow-amber-200/30 transition-all duration-500 animate-slide-in animation-delay-100"
             >
-              <h2
-                className={`text-2xl font-bold mb-8 pb-2 border-b ${
-                  theme === 'light' ? 'text-amber-800 border-amber-200' : 'text-amber-200 border-gray-700'
-                }`}
-              >
+              <h2 className="text-2xl font-bold mb-8 pb-2 border-b text-amber-800 border-amber-200">
                 Send Your Message
               </h2>
-              
+
               <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                 <div className="relative">
                   <input
@@ -244,9 +229,7 @@ const Contact = () => {
                     onChange={handleChange}
                     className={`peer w-full p-4 border-b-2 ${
                       errors.name ? 'border-red-500' : 'border-amber-300'
-                    } bg-transparent focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 ${
-                      theme === 'light' ? 'text-gray-900' : 'text-gray-100'
-                    } placeholder-transparent transition-all duration-300 rounded-t-md`}
+                    } bg-transparent focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 text-gray-900 placeholder-transparent transition-all duration-300 rounded-t-md`}
                     placeholder="Name"
                     aria-invalid={errors.name ? 'true' : 'false'}
                     aria-describedby={errors.name ? 'name-error' : undefined}
@@ -254,8 +237,8 @@ const Contact = () => {
                   />
                   <label
                     htmlFor="name"
-                    className={`absolute left-4 top-4 transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:-top-6 peer-focus:text-sm peer-focus:text-amber-500 ${
-                      formData.name ? '-top-6 text-sm text-amber-500' : 'text-gray-500'
+                    className={`absolute left-4 transition-all duration-300 peer-focus:-top-6 peer-focus:text-sm peer-focus:text-amber-500 ${
+                      formData.name ? '-top-6 text-sm text-amber-500' : 'top-4 text-base text-gray-500'
                     }`}
                   >
                     Name
@@ -274,9 +257,7 @@ const Contact = () => {
                     onChange={handleChange}
                     className={`peer w-full p-4 border-b-2 ${
                       errors.email ? 'border-red-500' : 'border-amber-300'
-                    } bg-transparent focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 ${
-                      theme === 'light' ? 'text-gray-900' : 'text-gray-100'
-                    } placeholder-transparent transition-all duration-300 rounded-t-md`}
+                    } bg-transparent focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 text-gray-900 placeholder-transparent transition-all duration-300 rounded-t-md`}
                     placeholder="Email"
                     aria-invalid={errors.email ? 'true' : 'false'}
                     aria-describedby={errors.email ? 'email-error' : undefined}
@@ -284,8 +265,8 @@ const Contact = () => {
                   />
                   <label
                     htmlFor="email"
-                    className={`absolute left-4 top-4 transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:-top-6 peer-focus:text-sm peer-focus:text-amber-500 ${
-                      formData.email ? '-top-6 text-sm text-amber-500' : 'text-gray-500'
+                    className={`absolute left-4 transition-all duration-300 peer-focus:-top-6 peer-focus:text-sm peer-focus:text-amber-500 ${
+                      formData.email ? '-top-6 text-sm text-amber-500' : 'top-4 text-base text-gray-500'
                     }`}
                   >
                     Email
@@ -304,9 +285,7 @@ const Contact = () => {
                     rows="5"
                     className={`peer w-full p-4 border-b-2 ${
                       errors.message ? 'border-red-500' : 'border-amber-300'
-                    } bg-transparent focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 ${
-                      theme === 'light' ? 'text-gray-900' : 'text-gray-100'
-                    } placeholder-transparent resize-none transition-all duration-300 rounded-t-md`}
+                    } bg-transparent focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 text-gray-900 placeholder-transparent resize-none transition-all duration-300 rounded-t-md`}
                     placeholder="Message"
                     aria-invalid={errors.message ? 'true' : 'false'}
                     aria-describedby={errors.message ? 'message-error' : undefined}
@@ -314,17 +293,18 @@ const Contact = () => {
                   ></textarea>
                   <label
                     htmlFor="message"
-                    className={`absolute left-4 top-4 transition-all duration-300 peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-focus:-top-6 peer-focus:text-sm peer-focus:text-amber-500 ${
-                      formData.message ? '-top-6 text-sm text-amber-500' : 'text-gray-500'
+                    className={`absolute left-4 transition-all duration-300 peer-focus:-top-6 peer-focus:text-sm peer-focus:text-amber-500 ${
+                      formData.message ? '-top-6 text-sm text-amber-500' : 'top-4 text-base text-gray-500'
                     }`}
                   >
                     Message
                   </label>
                   <div className="flex justify-between mt-2">
-                    <p className={`text-sm ${
-                      formData.message.length > 450 ? 'text-amber-600 dark:text-amber-400' : 
-                        theme === 'light' ? 'text-gray-600' : 'text-gray-400'
-                    }`}>
+                    <p
+                      className={`text-sm ${
+                        formData.message.length > 450 ? 'text-amber-600' : 'text-gray-600'
+                      }`}
+                    >
                       {formData.message.length}/500 characters
                     </p>
                     {errors.message && (
@@ -334,7 +314,7 @@ const Contact = () => {
                     )}
                   </div>
                 </div>
-                
+
                 <button
                   type="submit"
                   className={`w-full p-4 rounded-md ${
@@ -347,7 +327,7 @@ const Contact = () => {
                   {isSubmitting ? (
                     <>
                       <Loader className="w-5 h-5 animate-spin" />
-                      <span>Sending...</span>
+                      <span>Sending to BookHive...</span>
                     </>
                   ) : (
                     <>
@@ -356,6 +336,10 @@ const Contact = () => {
                     </>
                   )}
                 </button>
+                <p className="text-sm text-center text-gray-500 mt-4">
+                  Your message will be sent directly to{' '}
+                  <span className="font-medium text-amber-600">bookhivehelp@gmail.com</span>
+                </p>
               </form>
             </div>
           </div>
@@ -363,45 +347,33 @@ const Contact = () => {
           {/* Contact Info & FAQ */}
           <div>
             <div
-              className={`p-8 rounded-2xl shadow-2xl ${
-                theme === 'light' ? 'bg-white/90' : 'bg-gray-800/90'
-              } border border-amber-200 hover:shadow-amber-200/30 transition-all duration-500 mb-8 animate-slide-in animation-delay-200`}
+              className="p-8 rounded-2xl shadow-2xl bg-white/90 border border-amber-200 hover:shadow-amber-200/30 transition-all duration-500 mb-8 animate-slide-in animation-delay-200"
             >
-              <h2
-                className={`text-2xl font-bold mb-8 pb-2 border-b ${
-                  theme === 'light' ? 'text-amber-800 border-amber-200' : 'text-amber-200 border-gray-700'
-                }`}
-              >
+              <h2 className="text-2xl font-bold mb-8 pb-2 border-b text-amber-800 border-amber-200">
                 Connect With Us
               </h2>
               <div className="space-y-6">
                 {contactInfo.map((item, index) => (
                   <div key={index} className="flex items-start">
-                    <div className={`p-2 rounded-full ${theme === 'light' ? 'bg-amber-100' : 'bg-gray-700'} mr-3 text-amber-600 dark:text-amber-400`}>
+                    <div className="p-2 rounded-full bg-amber-100 mr-3 text-amber-600">
                       {item.icon}
                     </div>
                     <div>
                       <h3 className="font-medium text-lg mb-1">{item.label}</h3>
-                      {item.multiline ? (
-                        <p className={`${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
-                          {item.value}
-                        </p>
-                      ) : (
-                        <div className="flex items-center">
-                          <button
-                            onClick={() => copyToClipboard(item.value, item.label.toLowerCase())}
-                            className={`${theme === 'light' ? 'text-amber-700 hover:text-amber-900' : 'text-amber-400 hover:text-amber-300'} flex items-center transition-colors`}
-                            aria-label={`Copy ${item.label}`}
-                          >
-                            <span className="mr-2">{item.value}</span>
-                            {copied === item.label.toLowerCase() ? (
-                              <Check className="w-4 h-4 text-green-500" />
-                            ) : (
-                              <Copy className="w-4 h-4 opacity-70" />
-                            )}
-                          </button>
-                        </div>
-                      )}
+                      <div className="flex items-center">
+                        <button
+                          onClick={() => copyToClipboard(item.value, item.label.toLowerCase())}
+                          className="text-amber-700 hover:text-amber-900 flex items-center transition-colors"
+                          aria-label={`Copy ${item.label}`}
+                        >
+                          <span className="mr-2">{item.value}</span>
+                          {copied === item.label.toLowerCase() ? (
+                            <Check className="w-4 h-4 text-green-500" />
+                          ) : (
+                            <Copy className="w-4 h-4 opacity-70" />
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -409,7 +381,7 @@ const Contact = () => {
 
               {/* Social Links */}
               <div className="mt-8">
-                <h3 className={`font-medium text-lg mb-4 ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'}`}>
+                <h3 className="font-medium text-lg mb-4 text-gray-800">
                   Follow Us
                 </h3>
                 <div className="flex flex-wrap gap-3">
@@ -419,7 +391,7 @@ const Contact = () => {
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`flex items-center px-3 py-2 rounded-md ${theme === 'light' ? 'bg-amber-100 hover:bg-amber-200 text-amber-800' : 'bg-gray-700 hover:bg-gray-600 text-amber-300'} transition-colors`}
+                      className="flex items-center px-3 py-2 rounded-md bg-amber-100 hover:bg-amber-200 text-amber-800 transition-colors"
                       aria-label={`Visit our ${link.name} page`}
                     >
                       <span className="mr-1">{link.name}</span>
@@ -432,26 +404,18 @@ const Contact = () => {
 
             {/* FAQ Section */}
             <div
-              className={`p-8 rounded-2xl shadow-2xl ${
-                theme === 'light' ? 'bg-white/90' : 'bg-gray-800/90'
-              } border border-amber-200 hover:shadow-amber-200/30 transition-all duration-500 animate-slide-in animation-delay-300`}
+              className="p-8 rounded-2xl shadow-2xl bg-white/90 border border-amber-200 hover:shadow-amber-200/30 transition-all duration-500 animate-slide-in animation-delay-300"
             >
-              <h2
-                className={`text-2xl font-bold mb-6 pb-2 border-b ${
-                  theme === 'light' ? 'text-amber-800 border-amber-200' : 'text-amber-200 border-gray-700'
-                }`}
-              >
+              <h2 className="text-2xl font-bold mb-6 pb-2 border-b text-amber-800 border-amber-200">
                 Frequently Asked Questions
               </h2>
               <div className="space-y-4">
                 {faqs.map((faq, index) => (
-                  <div key={index} className="border border-amber-100 dark:border-gray-700 rounded-lg overflow-hidden">
+                  <div key={index} className="border border-amber-100 rounded-lg overflow-hidden">
                     <button
                       onClick={() => setFaqOpen(faqOpen === index ? null : index)}
                       className={`w-full text-left p-4 ${
-                        faqOpen === index 
-                          ? theme === 'light' ? 'bg-amber-100' : 'bg-gray-700' 
-                          : theme === 'light' ? 'bg-amber-50 hover:bg-amber-100' : 'bg-gray-800 hover:bg-gray-700'
+                        faqOpen === index ? 'bg-amber-100' : 'bg-amber-50 hover:bg-amber-100'
                       } transition-colors flex justify-between items-center`}
                       aria-expanded={faqOpen === index}
                       aria-controls={`faq-${index}`}
@@ -474,15 +438,13 @@ const Contact = () => {
                         </svg>
                       </div>
                     </button>
-                    <div 
+                    <div
                       id={`faq-${index}`}
                       className={`overflow-hidden transition-all duration-300 ${
                         faqOpen === index ? 'max-h-40' : 'max-h-0'
                       }`}
                     >
-                      <div className={`p-4 ${theme === 'light' ? 'bg-white' : 'bg-gray-800'}`}>
-                        {faq.a}
-                      </div>
+                      <div className="p-4 bg-white">{faq.a}</div>
                     </div>
                   </div>
                 ))}
@@ -490,34 +452,30 @@ const Contact = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Business Hours */}
-        <div className={`mt-8 p-8 rounded-2xl shadow-2xl ${
-          theme === 'light' ? 'bg-white/90' : 'bg-gray-800/90'
-        } border border-amber-200 hover:shadow-amber-200/30 transition-all duration-500 animate-slide-in animation-delay-400`}>
-          <h2
-            className={`text-2xl font-bold mb-6 pb-2 border-b ${
-              theme === 'light' ? 'text-amber-800 border-amber-200' : 'text-amber-200 border-gray-700'
-            }`}
-          >
+        <div
+          className="mt-8 p-8 rounded-2xl shadow-2xl bg-white/90 border border-amber-200 hover:shadow-amber-200/30 transition-all duration-500 animate-slide-in animation-delay-400"
+        >
+          <h2 className="text-2xl font-bold mb-6 pb-2 border-b text-amber-800 border-amber-200">
             Business Hours
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className={`p-4 rounded-lg ${theme === 'light' ? 'bg-amber-50' : 'bg-gray-700'}`}>
+            <div className="p-4 rounded-lg bg-amber-50">
               <h3 className="font-medium text-center mb-2">Monday - Friday</h3>
-              <p className="text-center text-amber-600 dark:text-amber-400 text-lg">9:00 AM - 6:00 PM</p>
+              <p className="text-center text-amber-600 text-lg">9:00 AM - 6:00 PM</p>
             </div>
-            <div className={`p-4 rounded-lg ${theme === 'light' ? 'bg-amber-50' : 'bg-gray-700'}`}>
+            <div className="p-4 rounded-lg bg-amber-50">
               <h3 className="font-medium text-center mb-2">Saturday</h3>
-              <p className="text-center text-amber-600 dark:text-amber-400 text-lg">10:00 AM - 4:00 PM</p>
+              <p className="text-center text-amber-600 text-lg">10:00 AM - 4:00 PM</p>
             </div>
-            <div className={`p-4 rounded-lg ${theme === 'light' ? 'bg-amber-50' : 'bg-gray-700'}`}>
+            <div className="p-4 rounded-lg bg-amber-50">
               <h3 className="font-medium text-center mb-2">Sunday</h3>
-              <p className="text-center text-amber-600 dark:text-amber-400 text-lg">Closed</p>
+              <p className="text-center text-amber-600 text-lg">Closed</p>
             </div>
-            <div className={`p-4 rounded-lg ${theme === 'light' ? 'bg-amber-50' : 'bg-gray-700'}`}>
+            <div className="p-4 rounded-lg bg-amber-50">
               <h3 className="font-medium text-center mb-2">Holidays</h3>
-              <p className="text-center text-amber-600 dark:text-amber-400 text-lg">Hours may vary</p>
+              <p className="text-center text-amber-600 text-lg">Hours may vary</p>
             </div>
           </div>
         </div>
@@ -584,16 +542,16 @@ const Contact = () => {
           animation: confetti 3s linear forwards;
         }
         .animation-delay-100 {
-          animation-delay: 0.1s;
+          animation-delay: 100ms;
         }
         .animation-delay-200 {
-          animation-delay: 0.2s;
+          animation-delay: 200ms;
         }
         .animation-delay-300 {
-          animation-delay: 0.3s;
+          animation-delay: 300ms;
         }
         .animation-delay-400 {
-          animation-delay: 0.4s;
+          animation-delay: 400ms;
         }
       `}</style>
     </div>
