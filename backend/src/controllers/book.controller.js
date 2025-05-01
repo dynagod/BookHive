@@ -7,7 +7,7 @@ import { destroyOnCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js"
 const postABook = asyncHandler(async (req, res) => {
     const { title, description, category, trending, oldPrice, newPrice } = req.body;
 
-    if (!title || !description || !category || !trending || !oldPrice || !newPrice || !req.file) throw new ApiError(400, "All the required details are necessary");
+    if (!title || !description || !category || !trending || !newPrice || !req.file) throw new ApiError(400, "All the required details are necessary");
 
     const imageLocalPath = req.file?.path;
 

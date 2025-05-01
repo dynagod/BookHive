@@ -42,27 +42,30 @@ const AddBook = () => {
 
   const onSubmit = async (data) => {
     const newBookData = new FormData();
-    newBookData.append('category', data.category);
-    newBookData.append('description', data.description);
-    newBookData.append('newPrice', data.newPrice);
-    newBookData.append('oldPrice', data.oldPrice);
-    newBookData.append('title', data.title);
-    newBookData.append('trending', data.trending);
-    newBookData.append('image', image);
+    newBookData.append("category", data.category);
+    newBookData.append("description", data.description);
+    newBookData.append("newPrice", data.newPrice);
+    newBookData.append("oldPrice", data.oldPrice);
+    newBookData.append("title", data.title);
+    newBookData.append("trending", data.trending);
+    newBookData.append("image", image);
 
     try {
-      await addBook(newBookData).unwrap();
-      Swal.fire({
-        title: "Book added",
-        text: "Your book is uploaded successfully!",
-        icon: "success",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, It's Okay!",
-      });
-      reset();
-      setImagePreview(null);
+      if (image) {
+        await addBook(newBookData).unwrap();
+        Swal.fire({
+          title: "Book added",
+          text: "Your book is uploaded successfully!",
+          icon: "success",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, It's Okay!",
+        });
+        reset();
+        setImagePreview(null);
+        setImage(null);
+      } else alert("Image is required");
     } catch (error) {
       console.error(error);
       alert("Failed to add book. Please try again.");
@@ -124,11 +127,12 @@ const AddBook = () => {
 
         {/* Old Price */}
         <InputField
-          label="Old Price"
+          label="Old Price (optional)"
           name="oldPrice"
           type="number"
           placeholder="Old Price"
           register={register}
+          required={false}
         />
 
         {/* New Price */}
@@ -153,20 +157,20 @@ const AddBook = () => {
           />
           {imagePreview && (
             <div className="relative">
-            <img
-              src={imagePreview}
-              alt="Preview"
-              className="w-20 h-20 object-cover rounded-lg border border-zinc-700"
-            />
-            <button
-              onClick={removeImage}
-              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-base-300
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="w-20 h-20 object-cover rounded-lg border border-zinc-700"
+              />
+              <button
+                onClick={removeImage}
+                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-base-300
               flex items-center justify-center"
-              type="button"
-            >
-              <FaXmark className="h-3 w-3" />
-            </button>
-          </div>
+                type="button"
+              >
+                <FaXmark className="h-3 w-3" />
+              </button>
+            </div>
           )}
         </div>
 
