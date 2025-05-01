@@ -48,6 +48,7 @@ const AddBook = () => {
     newBookData.append("newPrice", data.newPrice);
     newBookData.append("oldPrice", data.oldPrice);
     newBookData.append("title", data.title);
+    newBookData.append("author", data.author);
     newBookData.append("trending", data.trending);
     newBookData.append("image", image);
 
