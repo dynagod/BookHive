@@ -8,9 +8,10 @@ const SelectField = ({ label, name, options, register }) => {
         {...register(name,  { required: true })}
         className="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
       >
+        <option value="">Choose A Category</option>
         {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
+          <option key={option.id} value={option.title}>
+            {option.title}
           </option>
         ))}
       </select>

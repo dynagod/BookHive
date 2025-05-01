@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useAddBookMutation } from "../../../redux/features/books/booksApi";
 import Swal from "sweetalert2";
 import { FaXmark } from "react-icons/fa6";
+import { catagories } from "../../../utils/catagories";
 
 const AddBook = () => {
   const {
@@ -99,15 +100,7 @@ const AddBook = () => {
         <SelectField
           label="Category"
           name="category"
-          options={[
-            { value: "", label: "Choose A Category" },
-            { value: "business", label: "Business" },
-            { value: "technology", label: "Technology" },
-            { value: "fiction", label: "Fiction" },
-            { value: "horror", label: "Horror" },
-            { value: "adventure", label: "Adventure" },
-            // Add more options as needed
-          ]}
+          options={catagories}
           register={register}
         />
 
