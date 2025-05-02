@@ -75,17 +75,16 @@ const Contact = () => {
     try {
       const emailData = {
         to_email: 'bookhivehelp@gmail.com',
-        subject: `Contact Form: Message from ${formData.name}`,
         from_name: formData.name,
         from_email: formData.email,
         message: formData.message,
       };
 
       await emailjs.send(
-        'YOUR_SERVICE_ID',
-        'YOUR_TEMPLATE_ID',
+        import.meta.env.VITE_EMAIL_SERVICE_ID,
+        import.meta.env.VITE_EMAIL_TEMPLATE_ID,
         emailData,
-        'YOUR_PUBLIC_KEY'
+        import.meta.env.VITE_EMAIL_PUBLIC_KEY
       );
 
       clearInterval(interval);

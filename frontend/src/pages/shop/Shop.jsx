@@ -41,9 +41,9 @@ const Shop = () => {
         { showSearch && <InputSearch />}
       </div>
 
-      <div className="py-4 px-16 md:flex gap-6">
+      <div className="relative py-4 px-16 md:flex gap-6">
       {/* Left Sidebar - Filters */}
-      <aside className="md:w-1/4 w-full md:mb-0 mb-6">
+      <aside className="sticky top-0 md:w-1/4 w-full md:mb-0 mb-6 self-start">
         <h2 className="text-lg font-bold mb-2">FILTERS</h2>
         <div className="space-y-2 border-2 border-gray-200 p-4">
           <div className='font-semibold'>CATEGORIES</div>
