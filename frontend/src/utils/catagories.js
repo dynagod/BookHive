@@ -41,11 +41,4 @@ export const catagories = [
     description:
       "Delve into human expression through stunning art collections, thought-provoking photography, philosophical inquiries, and critical examinations of contemporary social issues and cultural phenomena.",
   },
-  {
-    id: 7,
-    title: "Lifestyle & Hobbies",
-    img: "https://images.unsplash.com/photo-1576872381149-7847515ce5d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-    description:
-      "Pursue your passions with specialized guides on crafting, gardening, music, collecting, outdoor activities, and creative pursuits that bring joy and fulfillment to your leisure time.",
-  },
 ];
