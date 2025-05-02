@@ -6,7 +6,6 @@ import {
 } from "react-icons/hi2";
 import { HiOutlineUser } from "react-icons/hi";
 
-import avatarImg from "../assets/avatar.png";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useAuth } from "../context/AuthContext";

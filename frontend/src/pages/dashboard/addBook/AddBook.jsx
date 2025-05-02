@@ -46,10 +46,10 @@ const AddBook = () => {
     newBookData.append("category", data.category);
     newBookData.append("description", data.description);
     newBookData.append("newPrice", data.newPrice);
-    newBookData.append("oldPrice", data.oldPrice);
+    if (data.oldPrice) newBookData.append("oldPrice", data.oldPrice);
     newBookData.append("title", data.title);
     newBookData.append("author", data.author);
-    newBookData.append("trending", data.trending);
+    newBookData.append("trending", data.trending ? data.trending : false);
     newBookData.append("image", image);
 
     try {
