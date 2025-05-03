@@ -25,11 +25,37 @@ const getOrderByEmail = asyncHandler(async (req, res) => {
 
     if (!email) throw new ApiError(400, "Email is required");
 
-    const orders = await Order.find({email}).sort({createdAt: -1});
+    const orders = await Order.find({email}).populate('productIds').sort({createdAt: -1});
 
     if (!orders) throw new ApiError(404, "Order not found");
 
     return res.status(200).json(new ApiResponse(200, { orders }, "Orders fetched successfully"));
 });
 
-export { createAnOrder, getOrderByEmail };
+const updateOrderStatus = asyncHandler(async (req, res) => {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    if (!orderId || !status) throw new ApiError(400, 'Order id and Status are required');
+
+    const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    if (!validStatuses.includes(status)) throw new ApiError(400, "Invalid status value");
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+        orderId,
+        { status },
+        { new: true }
+    );
+
+    if (!updatedOrder) throw new ApiError(404, 'Order not found');
+
+    return res.status(200).json(new ApiResponse(200, { order: updatedOrder }, "Order status updated successfully"));
+});
+
+const getAllOrders = asyncHandler(async (req, res) => {
+    const orders = await Order.find().populate('productIds').sort({ createdAt: -1 });
+  
+    return res.status(200).json(new ApiResponse(200, { orders }, "All orders fetched successfully"));
+});
+
+export { createAnOrder, getOrderByEmail, updateOrderStatus, getAllOrders };

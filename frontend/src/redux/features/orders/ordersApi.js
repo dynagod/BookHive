@@ -1,32 +1,60 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import getBaseUrl from "../../../utils/baseURL";
 
+const  baseQuery = fetchBaseQuery({
+    baseUrl: `${import.meta.env.VITE_BACKEND_URL}/api/orders`,
+    credentials: 'include',
+    prepareHeaders: (Headers) => {
+        const token =  localStorage.getItem('token');
+        if(token) {
+            Headers.set('Authorization', `Bearer ${token}`);
+        }
+        return Headers;
+    }
+});
 
 const ordersApi = createApi({
-    reducerPath: 'ordersApi',
-    baseQuery: fetchBaseQuery({
-        baseUrl: `${import.meta.env.VITE_BACKEND_URL}/api/orders`,
-        credentials: 'include'
+  reducerPath: 'ordersApi',
+  baseQuery,
+  tagTypes: ['Orders'],
+  endpoints: (builder) => ({
+    createOrder: builder.mutation({
+      query: (newOrder) => ({
+        url: "/",
+        method: "POST",
+        body: newOrder,
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Orders'],
     }),
-    tagTypes: ['Orders'],
-    endpoints: (builder) => ({
-        createOrder: (builder.mutation) ({
-            query: (newOrder) => ({
-                url: "/",
-                method: "POST",
-                body: newOrder,
-                credentials: 'include',
-            })
-        }),
-        getOrderByEmail: (builder.query) ({
-            query: (email) => ({
-                url: `/email/${email}`
-            }),
-            providesTags: ['Orders']
-        })
-    })
-})
+    getOrderByEmail: builder.query({
+      query: (email) => ({
+        url: `/email/${email}`
+      }),
+      providesTags: ['Orders'],
+    }),
+    updateOrderStatus: builder.mutation({
+      query: ({ orderId, status }) => ({
+        url: `/${orderId}`,
+        method: "PUT",
+        body: { status },
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Orders'],
+    }),
+    getAllOrders: builder.query({
+      query: () => ({
+        url: '/get-all'
+      }),
+      providesTags: ['Orders'],
+    }),
+  }),
+});
 
-export const {useCreateOrderMutation, useGetOrderByEmailQuery} = ordersApi;
+export const {
+  useCreateOrderMutation,
+  useGetOrderByEmailQuery,
+  useUpdateOrderStatusMutation,
+  useGetAllOrdersQuery,
+} = ordersApi;
 
 export default ordersApi;

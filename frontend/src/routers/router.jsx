@@ -21,6 +21,7 @@ import About from "../pages/about/About";
 import Contact from "../pages/contact/Contact";
 import { SearchProvider } from "../context/SearchContext";
 import { AuthProvide } from "../context/AuthContext";
+import AllOrders from "../pages/dashboard/orders/AllOrders";
 
 const router = createBrowserRouter([
   {
@@ -114,6 +115,14 @@ const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <ManageBooks />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "orders",
+        element: (
+          <AdminRoute>
+            <AllOrders />
           </AdminRoute>
         ),
       },
