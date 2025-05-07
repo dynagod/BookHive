@@ -1,57 +1,109 @@
-// src/components/RevenueChart.jsx
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
-// Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const RevenueChart = () => {
+const RevenueChart = ({ data }) => {
+    const monthlyData = data?.monthlyOrders || Array(12).fill(0).map((_, i) => ({
+        month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i],
+        amount: 0,
+    }));
 
+    const chartData = {
+        labels: monthlyData.map(item => item.month),
+        datasets: [
+            {
+                label: 'Orders',
+                data: monthlyData.map(item => item.amount),
+                backgroundColor: 'rgba(124, 58, 237, 0.6)',
+                borderColor: 'rgba(124, 58, 237, 1)',
+                borderWidth: 1,
+                borderRadius: 4,
+            },
+        ],
+    };
 
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    font: {
+                        size: 14,
+                        family: 'Inter, sans-serif',
+                    },
+                    color: '#1f2937',
+                },
+            },
+            title: {
+                display: true,
+                text: 'Monthly Orders Overview',
+                font: {
+                    size: 18,
+                    family: 'Inter, sans-serif',
+                    weight: 'bold',
+                },
+                color: '#1f2937',
+                padding: {
+                    bottom: 20,
+                },
+            },
+            tooltip: {
+                backgroundColor: '#1f2937',
+                titleFont: { size: 14 },
+                bodyFont: { size: 12 },
+                callbacks: {
+                    label: (context) => `${context.dataset.label}: ${context.parsed.y}`,
+                },
+            },
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Number of Orders',
+                    font: {
+                        size: 14,
+                        family: 'Inter, sans-serif',
+                    },
+                    color: '#1f2937',
+                },
+                grid: {
+                    color: '#e5e7eb',
+                },
+                ticks: {
+                    color: '#1f2937',
+                },
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Month',
+                    font: {
+                        size: 14,
+                        family: 'Inter, sans-serif',
+                    },
+                    color: '#1f2937',
+                },
+                grid: {
+                    display: false,
+                },
+                ticks: {
+                    color: '#1f2937',
+                },
+            },
+        },
+    };
 
-
-  const revenueData = [500, 700, 800, 600, 750, 900, 650, 870, 960, 1020, 1100, 1150];;
-
-  const data = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    datasets: [
-      {
-        label: 'Revenue (USD)',
-        data: revenueData,
-        backgroundColor: 'rgba(34, 197, 94, 0.7)', 
-        borderColor: 'rgba(34, 197, 94, 1)',
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'Monthly Revenue',
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-  };
-
-  return (
-    <div className="w-full max-w-3xl mx-auto p-4 bg-white shadow-lg rounded-lg">
-      <h2 className="text-center text-2xl font-bold text-gray-800 mb-4">Monthly Revenue</h2>
-      <div className='hidden md:block'>
-      <Bar data={data} options={options} className='' />
-      </div>
-    </div>
-  );
+    return (
+        <div className="w-full h-[400px]">
+            <Bar data={chartData} options={options} />
+        </div>
+    );
 };
 
 export default RevenueChart;
