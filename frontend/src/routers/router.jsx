@@ -19,14 +19,13 @@ import UserDashboard from "../pages/dashboard/users/UserDashboard";
 import Shop from "../pages/shop/Shop";
 import About from "../pages/about/About";
 import Contact from "../pages/contact/Contact";
-import { SearchProvider } from "../context/SearchContext";
 import { AuthProvide } from "../context/AuthContext";
 import AllOrders from "../pages/dashboard/orders/AllOrders";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <SearchProvider><AuthProvide><Home /></AuthProvide></SearchProvider>,
+    element: <AuthProvide><Home /></AuthProvide>,
   },
   {
     path: "/",

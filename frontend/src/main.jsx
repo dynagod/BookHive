@@ -8,9 +8,12 @@ import  'sweetalert2/dist/sweetalert2.js'
 
 import { Provider } from 'react-redux'
 import { store } from './redux/store.js'
+import { SearchProvider } from './context/SearchContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <RouterProvider router={router} />
+    <SearchProvider>
+      <RouterProvider router={router} />
+    </SearchProvider>
   </Provider>,
 )

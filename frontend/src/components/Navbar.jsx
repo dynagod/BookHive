@@ -91,9 +91,9 @@ const Navbar = () => {
         {/* right side */}
         <div className="relative flex items-center md:space-x-3 space-x-2">
           <NavLink
-            to="/shop"
             onClick={() => setShowSearch(true)}
-            className="p-2 text-black rounded-full bg-gray-300"
+            to="/shop"
+            className="p-2 bg-[#FFF6D9] text-[#0a0a0a] rounded-full cursor-pointer hover:bg-gray-300 transition-colors"
           >
             <IoSearchOutline size={20} />
           </NavLink>
@@ -101,18 +101,14 @@ const Navbar = () => {
           <div className="relative group">
             {currentUser ? (
               <>
-                <div 
-                  className="p-2 bg-[#FFF6D9] text-[#0a0a0a] rounded-full cursor-pointer hover:bg-gray-300 transition-colors"
-                >
+                <div className="p-2 bg-[#FFF6D9] text-[#0a0a0a] rounded-full cursor-pointer hover:bg-gray-300 transition-colors">
                   <HiOutlineUser size={20} />
                 </div>
                 {/* show dropdowns on hover */}
                 <div className="absolute right-0 mt-2 w-48 bg-[#FFF6D9] shadow-lg rounded-md z-40 invisible group-hover:visible transition-all opacity-0 group-hover:opacity-100">
                   <ul className="py-2">
                     {navigation.map((item) => (
-                      <li
-                        key={item.name}
-                      >
+                      <li key={item.name}>
                         <Link
                           to={item.href}
                           className="block px-4 py-2 text-sm text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#FFF6D9]"
@@ -133,7 +129,10 @@ const Navbar = () => {
                 </div>
               </>
             ) : (
-              <Link to="/login" className="p-2 bg-[#FFF6D9] text-[#0a0a0a] rounded-full hover:bg-gray-300 transition-colors">
+              <Link
+                to="/login"
+                className="p-2 bg-[#FFF6D9] text-[#0a0a0a] rounded-full cursor-pointer hover:bg-gray-300 transition-colors flex items-center justify-center"
+              >
                 <HiOutlineUser size={20} />
               </Link>
             )}

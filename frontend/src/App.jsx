@@ -5,7 +5,6 @@ import Footer from "./components/Footer";
 import { AuthProvide } from "./context/AuthContext";
 import { useEffect, useState } from "react";
 import Loading from "./components/Loading";
-import { SearchProvider } from "./context/SearchContext";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -26,13 +25,11 @@ function App() {
   return (
     <>
       <AuthProvide>
-        <SearchProvider>
           <Navbar />
           <main className="min-h-screen max-w-screen-2xl font-primary">
             <Outlet />
           </main>
           <Footer />
-        </SearchProvider>
       </AuthProvide>
     </>
   );
