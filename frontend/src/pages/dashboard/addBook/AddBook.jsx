@@ -6,6 +6,7 @@ import { useAddBookMutation } from "../../../redux/features/books/booksApi";
 import Swal from "sweetalert2";
 import { FaXmark } from "react-icons/fa6";
 import { catagories } from "../../../utils/catagories";
+import toast from "react-hot-toast";
 
 const AddBook = () => {
   const {
@@ -67,10 +68,10 @@ const AddBook = () => {
         reset();
         setImagePreview(null);
         setImage(null);
-      } else alert("Image is required");
+      } else toast.error("Image is required");
     } catch (error) {
       console.error(error);
-      alert("Failed to add book. Please try again.");
+      toast.error("Failed to add book. Please try again.");
     }
   };
 

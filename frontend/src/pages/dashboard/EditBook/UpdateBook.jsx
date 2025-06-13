@@ -7,7 +7,7 @@ import { useFetchBookByIdQuery, useUpdateBookMutation } from '../../../redux/fea
 import Loading from '../../../components/Loading';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import getBaseUrl from '../../../utils/baseURL';
+import toast from 'react-hot-toast';
 
 const UpdateBook = () => {
   const { id } = useParams();
@@ -56,7 +56,7 @@ const UpdateBook = () => {
       await refetch()
     } catch (error) {
       console.log("Failed to update book.");
-      alert("Failed to update book.");
+      toast.error("Failed to update book.");
     }
   }
   if (isLoading) return <Loading />

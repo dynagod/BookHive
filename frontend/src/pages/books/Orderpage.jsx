@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import {
-  useGetOrderByEmailQuery,
-  useUpdateOrderStatusMutation,
-} from "../../redux/features/orders/ordersApi";
+import { useCancelOrderMutation, useGetOrderByEmailQuery } from "../../redux/features/orders/ordersApi";
 import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
+import Loading from "../../components/Loading";
 
 const OrderPage = () => {
   const { currentUser } = useAuth();
@@ -14,17 +13,17 @@ const OrderPage = () => {
     isLoading,
     isError,
   } = useGetOrderByEmailQuery(currentUser.email);
-  const [updateOrderStatus] = useUpdateOrderStatusMutation();
+  const [cancelOrder] = useCancelOrderMutation();
   const orders = data?.orders || [];
 
   const handleCancelOrder = async (orderId) => {
     if (window.confirm("Are you sure you want to cancel this order?")) {
       try {
         setCancellingOrder(orderId);
-        await updateOrderStatus({ orderId, status: "cancelled" });
+        await cancelOrder({ orderId });
       } catch (error) {
         console.error("Failed to cancel order:", error);
-        alert("Failed to cancel order. Please try again.");
+        toast.error("Failed to cancel order. Please try again.");
       } finally {
         setCancellingOrder(null);
       }
@@ -33,9 +32,7 @@ const OrderPage = () => {
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center h-64 text-lg">
-        Loading orders...
-      </div>
+      <Loading height="h-64" />
     );
   if (isError)
     return (

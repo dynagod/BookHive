@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [message, setMessage] = useState("");
@@ -19,10 +20,12 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
       await loginUser(data.email, data.password);
-      alert("Login successful!");
-      navigate("/");
+      toast.success("Login successful!");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     } catch (error) {
-      setMessage("Please provide a valid email and password");
+      toast.error(error.message || "Login failed");
       console.error(error);
     }
   };
@@ -30,10 +33,12 @@ const Login = () => {
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle();
-      alert("Login successful!");
-      navigate("/");
+      toast.success("Login successful!");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     } catch (error) {
-      alert("Google sign in failed!");
+      toast.error(error.message || "Google signin failed");
       console.error(error);
     }
   };

@@ -52,10 +52,26 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, { order: updatedOrder }, "Order status updated successfully"));
 });
 
+const cancelOrder = asyncHandler(async (req, res) => {
+    const { orderId } = req.params;
+
+    if (!orderId) throw new ApiError(400, 'Order id is required');
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+        orderId,
+        { status: "cancelled" },
+        { new: true }
+    );
+
+    if (!updatedOrder) throw new ApiError(404, 'Order not found');
+
+    return res.status(200).json(new ApiResponse(200, { order: updatedOrder }, "Order cancelled successfully"));
+});
+
 const getAllOrders = asyncHandler(async (req, res) => {
     const orders = await Order.find().populate('productIds').sort({ createdAt: -1 });
   
     return res.status(200).json(new ApiResponse(200, { orders }, "All orders fetched successfully"));
 });
 
-export { createAnOrder, getOrderByEmail, updateOrderStatus, getAllOrders };
+export { createAnOrder, getOrderByEmail, updateOrderStatus, cancelOrder, getAllOrders };

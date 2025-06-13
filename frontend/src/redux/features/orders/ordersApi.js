@@ -41,6 +41,14 @@ const ordersApi = createApi({
       }),
       invalidatesTags: ['Orders'],
     }),
+    cancelOrder: builder.mutation({
+      query: ({ orderId }) => ({
+        url: `/cancel/${orderId}`,
+        method: "PUT",
+        credentials: 'include',
+      }),
+      invalidatesTags: ['Orders'],
+    }),
     getAllOrders: builder.query({
       query: () => ({
         url: '/get-all'
@@ -54,6 +62,7 @@ export const {
   useCreateOrderMutation,
   useGetOrderByEmailQuery,
   useUpdateOrderStatusMutation,
+  useCancelOrderMutation,
   useGetAllOrdersQuery,
 } = ordersApi;
 

@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 const Register = () => {
-  const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { registerUser, signUpWithGoogle } = useAuth();
@@ -49,11 +49,13 @@ const Register = () => {
 
     try {
       await registerUser(email, password, fullName, phone, address);
-      alert("User registered successfully!");
-      navigate("/");
+      toast.success("User registered successfully!");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     } catch (error) {
       console.error(error);
-      setMessage("Registration failed. Please check your inputs.");
+      toast.error(error.message || "Registration failed. Please check your inputs.");
     }
   };
 
@@ -74,10 +76,12 @@ const Register = () => {
       };
 
       await signUpWithGoogle(fullName, phone, address);
-      alert("User registered successfully!");
-      navigate("/");
+      toast.success("User registered successfully!");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     } catch (error) {
-      alert("Google sign-in failed!");
+      toast.error(error.message || "Google sign-in failed!");
       console.error(error);
     }
   };
@@ -253,12 +257,6 @@ const Register = () => {
               </div>
             </div>
           </div>
-
-          {message && (
-            <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded">
-              <p className="text-red-700 text-sm">{message}</p>
-            </div>
-          )}
 
           <button
             type="submit"

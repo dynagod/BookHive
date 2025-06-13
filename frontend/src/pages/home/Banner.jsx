@@ -84,7 +84,7 @@ const Banner = () => {
                   <img 
                     src={bannerImg} 
                     alt="New book releases" 
-                    className="max-w-md h-auto object-contain mx-auto transform hover:scale-105 transition-transform duration-700" 
+                    className="w-full max-w-[500px] sm:max-w-[400px] md:max-w-[400px] lg:max-w-[500px] sm:max-h-[200px] md:max-h-[300px] lg:h-auto h-[250px] object-contain mx-auto transform hover:scale-105 transition-transform duration-700"
                   />
               </div>
             </motion.div>
@@ -131,7 +131,7 @@ const Banner = () => {
               
               {/* Scroll Indicator */}
               <motion.div 
-                className="mt-12 flex justify-center md:justify-start"
+                className="hidden md:flex mt-12 justify-start"
                 variants={scrollButtonVariants}
                 initial="initial"
                 animate="animate"
