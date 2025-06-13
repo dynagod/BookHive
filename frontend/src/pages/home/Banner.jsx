@@ -81,13 +81,11 @@ const Banner = () => {
               <div className="relative">
                 
                 {/* Image container */}
-                <div className="relative overflow-hidden rounded-lg shadow-xl">
                   <img 
                     src={bannerImg} 
                     alt="New book releases" 
-                    className="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700" 
+                    className="max-w-md h-auto object-contain mx-auto transform hover:scale-105 transition-transform duration-700" 
                   />
-                </div>
               </div>
             </motion.div>
 
@@ -125,9 +123,9 @@ const Banner = () => {
                   <NavLink to='/shop' className="px-6 py-3 bg-blue-600 text-[#FFF6D9] rounded-md shadow-lg hover:bg-blue-700 transition-all duration-300 font-medium">
                     Browse Collection
                   </NavLink>
-                  <button className="px-6 py-3 bg-[#FFF6D9] text-[#0a0a0a] rounded-md hover:bg-gray-300 transition-all duration-300">
+                  <NavLink to='/about' className="px-6 py-3 bg-[#FFF6D9] text-[#0a0a0a] rounded-md hover:bg-gray-300 transition-all duration-300">
                     Learn More
-                  </button>
+                  </NavLink>
                 </motion.div>
               </motion.div>
               

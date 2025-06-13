@@ -53,7 +53,8 @@ const getBooksBySearch = asyncHandler(async (req, res) => {
 
     const keyword = {
         $or: [
-            { title: { $regex: safeQuery, $options: "i" } }
+            { title: { $regex: safeQuery, $options: "i" } },
+            { author: { $regex: safeQuery, $options: "i" } }
         ]
     };
 
