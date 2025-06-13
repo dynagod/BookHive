@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import React, { useRef } from "react";
+import { Link } from "react-router-dom";
 
 const SingleCategory = ({ category, containerRef }) => {
   const ref = useRef();
@@ -41,12 +42,12 @@ const SingleCategory = ({ category, containerRef }) => {
           <p className="text-lg md:text-2xl text-gray-300">
             {category.description}
           </p>
-          <button className="px-8 py-3 bg-[#FFF6D9] text-[#0a0a0a] rounded-md hover:bg-gray-300 transition-colors duration-300 cursor-pointer shadow-lg flex items-center gap-2">
+          <Link to='/shop' className="px-8 py-3 bg-[#FFF6D9] text-[#0a0a0a] rounded-md hover:bg-gray-300 transition-colors duration-300 cursor-pointer shadow-lg flex items-center gap-2">
             Explore
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
             </svg>
-          </button>
+          </Link>
         </motion.div>
       </div>
 
